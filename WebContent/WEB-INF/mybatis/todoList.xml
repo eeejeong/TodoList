@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="todoList">
+	<!-- 할 일 목록 조회 -->
+	<select id="selectTodoItems" resultType="com.todolist.web.dto.Todolist">
+		select *
+		from todolist
+		where status='N'
+		order by requested_date, priority desc
+	</select>
+	
+	<!-- 완료한 일 목록 조회 -->
+	<select id="selectDoneItems" resultType="com.todolist.web.dto.Todolist">
+		select *
+		from todolist
+		where status='Y'
+		order by requested_date, priority desc
+	</select>
+
+	<!-- 할 일 삽입 -->
+	<insert id="insertItem" parameterType="com.todolist.web.dto.Todolist">
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			select todolist_no.nextval from dual
+		</selectKey>
+		insert into todolist(no, content, requested_date, status, priority)
+		values(#{no}, #{content}, #{requested_date}, 'N', #{priority})
+	</insert>
+	
+	<!-- 할 일 삭제 -->
+	<delete id="deleteItem" parameterType="int">
+		delete
+		from todolist
+		where no = #{no}
+	</delete>
+	
+	<!-- 할 일 상태 수정 -->
+	<update id="updateStatus" parameterType="map">
+		update todolist
+		set status=#{status}
+		where no=#{no}
+	</update>
+	
+</mapper>
